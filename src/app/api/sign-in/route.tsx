@@ -21,11 +21,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
     'token',
     `${Buffer.from(`${user.id}:${user.password}`).toString('base64')}`,
     {
-      httpOnly: true, // Доступ к куке только через сервер
-      secure: process.env.NODE_ENV === 'production', // Только HTTPS в продакшене
-      sameSite: 'strict', // Защита от CSRF
-      maxAge: 60 * 60 * 24 * 7, // Кука активна в течение 7 дней
-      path: '/', // Кука доступна для всех роутов
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 7,
+      path: '/',
     },
   );
 

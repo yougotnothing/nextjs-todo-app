@@ -21,7 +21,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'User created success',
-      user,
+      user: {
+        name: user.name,
+        id: user.id,
+      },
     });
   } catch {
     return NextResponse.json({
