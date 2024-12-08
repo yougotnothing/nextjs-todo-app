@@ -17,7 +17,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
       message: "passwords don't match.",
     });
 
-  res.cookies.set(
+  const response = NextResponse.json({
+    user: {
+      name: user.name,
+      id: user.id,
+    },
+  });
+
+  response.cookies.set(
     'token',
     `${Buffer.from(`${user.id}:${user.password}`).toString('base64')}`,
     {
@@ -29,10 +36,5 @@ export async function POST(req: NextRequest, res: NextResponse) {
     },
   );
 
-  return NextResponse.json({
-    user: {
-      name: user.name,
-      id: user.id,
-    },
-  });
+  return response;
 }

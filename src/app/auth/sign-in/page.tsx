@@ -24,7 +24,7 @@ export default function Page() {
       body: JSON.stringify({ name, password }),
     });
 
-    if (response.ok) router.push(`/user/${(await response.json()).user.id}`);
+    if (response.ok) router.push(`/user/${(await response.json()).user.name}`);
     else console.warn(await response.text());
   };
 
