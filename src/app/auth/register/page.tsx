@@ -25,7 +25,6 @@ export default function Register() {
 
     const response = await fetch('/api/register', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, password }),
     });
 
@@ -36,7 +35,7 @@ export default function Register() {
   return (
     <div className="flex h-screen w-screen flex-col items-center justify-center gap-4">
       <div className="flex flex-col gap-6 p-4 rounded-xl">
-        <Card className="flex flex-col gap-4 dark:bg-current p-4 dark w-[30rem]">
+        <Card className="flex flex-col gap-4 p-4 w-[30rem] dark">
           <CardHeader className="text-[2rem]">Register</CardHeader>
           <Input placeholder="name" onChange={handleSetName} />
           <Input
@@ -50,9 +49,14 @@ export default function Register() {
             onChange={handleSetConfirmPassword}
           />
           <Button onClick={handleRegister}>Register</Button>
+          <div className="flex gap-2 items-center">
+            <p>have account?</p>
+            <a className="font-semibold" target="_self" href="/auth/sign-in">
+              Sign in
+            </a>
+          </div>
         </Card>
       </div>
     </div>
   );
 }
-

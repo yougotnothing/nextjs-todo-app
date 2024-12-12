@@ -4,8 +4,9 @@ import { ChangeEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import callServer from '@/lib/call-server';
 
 export default function Page() {
   const [name, setName] = useState<string>('');
@@ -18,14 +19,16 @@ export default function Page() {
     setName(e.target.value);
 
   const handleSignIn = async () => {
-    const response = await fetch('/api/sign-in', {
+    await callServer<SignIn>('/api/sign-in', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, password }),
-    });
-
-    if (response.ok) router.push(`/user/${(await response.json()).user.name}`);
-    else console.warn(await response.text());
+    })
+      .then(async ([_, data]) => {
+        localStorage.setItem('token', (await data).token);
+        localStorage.setItem('username', (await data).user.name);
+        router.push(`/self`);
+      })
+      .catch(r => console.error(r));
   };
 
   return (
@@ -33,9 +36,21 @@ export default function Page() {
       <Card className="flex flex-col p-4 dark gap-4 w-[30rem]">
         <CardHeader className="text-[2rem]">Sign in</CardHeader>
         <Input placeholder="name" onChange={handleSetName} />
-        <Input placeholder="password" onChange={handleSetPassword} />
+        <Input
+          placeholder="password"
+          type="password"
+          onChange={handleSetPassword}
+        />
         <Button onClick={handleSignIn}>Sign in</Button>
+        <div className="flex gap-2 items-center">
+          <p>not registered yet?</p>
+          <a className="font-semibold" target="_self" href="/auth/register">
+            Register
+          </a>
+        </div>
       </Card>
     </div>
   );
 }
+
+type SignIn = { user: { name: string; id: string }; token: string };

@@ -1,20 +1,15 @@
 import db from '@/app/lib/db';
 import { Card, CardDescription, CardHeader } from '@/components/ui/card';
 
-const getUserById = async (name: string) => {
-  const user = await db.user.findFirst({ where: { name } });
+const getUserById = async (name: string) =>
+  (await db.user.findFirst({ where: { name } })) ??
+  (function () {
+    throw new Error('user not found.');
+  })();
 
-  if (!user) throw new Error('user is not found');
-
-  return user;
-};
-
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ username: string }>;
-}) {
+export default async function Page({ params }: MetaParams) {
   const user = await getUserById((await params).username);
+
   return (
     <div className="flex h-screen w-screen flex-col gap-2 items-center justify-center relative">
       <Card className="flex flex-col gap-4 w-50 dark p-4">

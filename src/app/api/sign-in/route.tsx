@@ -1,5 +1,3 @@
-'use server';
-
 import { NextRequest, NextResponse } from 'next/server';
 
 import db from '@/app/lib/db';
@@ -22,6 +20,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       name: user.name,
       id: user.id,
     },
+    token: `${Buffer.from(`${user.id}:${user.password}`).toString('base64')}`,
   });
 
   response.cookies.set(
@@ -34,6 +33,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
       maxAge: 60 * 60 * 24 * 7,
       path: '/',
     },
+  );
+
+  req.headers.set(
+    'Authorization',
+    `Basic ${Buffer.from(`${user.id}:${user.password}`).toString('base64')}`,
   );
 
   return response;
